@@ -32,7 +32,7 @@ public class UserAction  extends BaseAction{
     	String loginName = getRequest().getParameter("loginName");
     	String pwd = getRequest().getParameter("pwd");
 		LOG.debug("loginName::pwd==" + loginName + ":" + pwd);
-		loginName = "admin";
+//		loginName = "admin";
 		int status = userService.login(loginName, pwd);
 		Map<String, Object> jsonMap = new HashMap<String, Object>();
     	jsonMap.put("status", status);

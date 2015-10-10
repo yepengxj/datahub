@@ -107,8 +107,8 @@ public class DataItemMgrServiceImpl implements IDataItemMgrService{
 	 * @see com.asiainfo.bdx.datahub.dataitemmgr.service.IDataItemMgrService#queryDataitemDtoById(java.lang.Long)
 	 */
 	
-	public String queryDataitemById(Long dataitemId) throws Exception {
-		return dataItemMgrDao.queryDateitemById(dataitemId);
+	public String queryDataitemById(Long dataitemId,String downDate) throws Exception {
+		return dataItemMgrDao.queryDateitemById(dataitemId,downDate);
 	}
 
 

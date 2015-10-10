@@ -1,13 +1,46 @@
 ﻿<%@ include file="../common/header.jsp" %>
 
-<script type="text/javascript" src="<%=basePath%>/common/upload/js/jquery.dialog.js"></script>
-	<script type="text/javascript" src="<%=basePath%>/common/upload/js/jquery.form.js"></script>
-	<script type="text/javascript" src="<%=basePath%>/common/upload/js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/common/upload/js/jquery.dialog.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/common/upload/js/jquery.form.js"></script>
+	<!--  
+	<script type="text/javascript" src="<%=request.getContextPath()%>/common/upload/js/ajaxfileupload.js"></script>
+	-->
+	<script type="text/javascript" src="<%=request.getContextPath()%>/common/upload/js/plupload.full.min.js"></script>
     <script type="text/javascript">
+    
+    
+
+    
+    function ajaxFileUpload1()
+    {
+    	var refreshDate = $("#refreshDate").val(); 
+    	var dataitemId = $("#subupload").attr("ind");
+    	
+    	
+		$('#uploadForm').ajaxSubmit ({
+    		
+    		url:'<%=basePath%>/file/fileAction.action',//用于文件上传的服务器端请求地址
+           	dataType: 'json',//返回值类型 一般设置为json
+    		 data: {'dataitemId':dataitemId,'uploadtime':refreshDate},
+    	    success: function(data) {
+    	    	if(data.status==1){
+    	    		alert("上传成功");
+				}else{
+					alert(data.message);
+					$('#attachmentFile'+n).val("");
+					$('#attachmentText'+n).val("");
+				}
+    	    },
+    		complete: function(xhr) {
+    			
+    		}
+    	}); 
+    }
+    
     function ajaxFileUpload()
     {	
     	var refreshDate = $("#refreshDate").val(); 
-    	var dataitemId = $("#submit").attr("ind");
+    	var dataitemId = $("#subupload").attr("ind");
         $.ajaxFileUpload
         (
             {
@@ -183,7 +216,7 @@
 
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-<form action="" method="post" enctype="multipart/form-data">
+<form id="uploadForm"  method="post" enctype="multipart/form-data">
     <div class="modal-dialog" role="document">
         <div class="modal-content" >
             <div class="modal-header">
@@ -200,6 +233,7 @@
                         <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                     </div>
+                     <!-- <input id="subupload1" type="hidden"> -->
       		  	</span>
       		  	<span>
       		  		<label class="control-label col-md-2">文件上传</label>
@@ -210,9 +244,11 @@
       		  	<span>
       		  		<div class="col-md-2"></div>
       		  		<div class="col-md-8">
-                        <input type="button" class="uploadsubmit" value="确认上传" ind="" onclick="ajaxFileUpload();" class="btn btn-default" id="submit">
+                        <input type="button" class="uploadsubmit" value="确认上传" ind="" onclick="ajaxFileUpload1();" id="subupload"  class="btn btn-default" >
                     </div>
       		  	</span>
+      		  	
+        		
             </div>
         </div>
     </div>
@@ -316,12 +352,15 @@
     function showModal(e){
     	var that=e
     	var $ind=$(that).attr('ind');
-    	$('#submit').attr('ind',$ind);
+    	
+    	$('#subupload').attr('ind',$ind);
+    	
+    	//alert($('#subupload1').val())
         $('#myModal').modal('toggle')
     }
     function hideModal(){
         $('#myModal').modal('hide')
-        $('.uploadsubmit').prop('ind','');
+        $('#subupload').prop('ind','');
     }
     function showUpload(targets){
         $(targets).find('.item-image-hidden').css("visibility", "visible");

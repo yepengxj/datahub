@@ -27,7 +27,7 @@ public interface IDataItemMgrService {
 	 * @return
 	 * @throws Exception
 	 */
-	public String queryDataitemById(Long dataitemId)
+	public String queryDataitemById(Long dataitemId,String downDate)
 			throws Exception;
 	
 	/**

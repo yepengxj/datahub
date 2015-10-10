@@ -104,15 +104,16 @@ public class DataItemMgrDaoImpl extends BaseJdbcDao implements IDataItemMgrDao{
 	}
 
 	
-	public String queryDateitemById(Long dataitemId) throws Exception {
+	public String queryDateitemById(Long dataitemId,String downDate) throws Exception {
 		//List params = new ArrayList();
 		StringBuilder sb = new StringBuilder();
 		//sb.append("SELECT DISTINCT A.DATAITEM_ID, A.DATAITEM_NAME,A.COMMENT, A.SAMPLE_FILENAME FROM DH_DATAITEM A WHERE A.DATAITEM_ID = ? ");
-		sb.append("SELECT  DISTINCT  FILENAME FROM datahub.DH_UPLOADLOG  A  WHERE A.DATAITEM_ID =  ? ");
+		sb.append("SELECT  DISTINCT  FILENAME FROM DH_UPLOADLOG  A  WHERE A.DATAITEM_ID =  ? AND A.DATA_DATE=?");
 		//params.add(dataitemId);
 		log.debug("DataItemMgrDaoImpl:queryDateitemById:sql::" + sb.toString());
 		log.debug("DataItemMgrDaoImpl:queryDateitemById:param::" + dataitemId);
-		return getJdbcTemplate().queryForObject(sb.toString(), new Object[] {dataitemId}, java.lang.String.class );
+		
+		return  getJdbcTemplate().queryForObject(sb.toString(), new Object[] {dataitemId,downDate}, java.lang.String.class );
 		//List<String> list = getJdbcTemplate().query(sb.toString(), ParameterizedBeanPropertyRowMapper.newInstance(String.class), params.toArray());
 		//return list.get(0);
 	}

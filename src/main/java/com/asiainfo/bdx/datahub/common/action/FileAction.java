@@ -8,8 +8,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +24,8 @@ import org.apache.struts2.ServletActionContext;
 import com.asiainfo.bdx.datahub.common.DHConstants;
 import com.asiainfo.bdx.datahub.dataitemmgr.service.IDataItemMgrService;
 import com.asiainfo.bdx.datahub.model.Dataitem;
+
+import net.sf.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class FileAction extends BaseAction {
@@ -160,6 +166,13 @@ public class FileAction extends BaseAction {
     @SuppressWarnings("deprecation")
     @Override
     public String execute() throws Exception {
+    	
+    	String dataItemId = this.getRequest().getParameter("dataitemId");
+    	
+    	String uploadtime = this.getRequest().getParameter("uploadtime");
+    	long dataitemId= Long.parseLong(dataItemId);
+    	refreshDate = new SimpleDateFormat("yyyy-MM-dd").parse(uploadtime) ;
+    	
     	String accurateRefreshDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(refreshDate);
     	String inaccuracyRefreshDate = new SimpleDateFormat("yyyy-MM-dd").format(refreshDate);
     	uploadPath = DHConstants.DATAFILE_UPLOADPATH;
@@ -188,6 +201,9 @@ public class FileAction extends BaseAction {
         	permitFileSuffix = DHConstants.PERMIT_UPLOAD_FILE_TYPE.toLowerCase().split(",");
         }
         fileFileName = fileFileName.toLowerCase();
+        
+        Map<String, Object> jsonMap = new HashMap<String, Object>();
+    	
         try {
             File f = this.getFile();
             // 判断文件格式
@@ -201,7 +217,33 @@ public class FileAction extends BaseAction {
             if(!canUpload){
             	status = "0";
             	message = "只允许上传的文件格式为：" + DHConstants.PERMIT_UPLOAD_FILE_TYPE;
-                return ERROR;
+            	jsonMap.put("status", status);
+            	jsonMap.put("message", message);
+            	String json = JSONObject.fromObject(jsonMap).toString();
+            	System.out.println("==================josn1:"+json+"===========");
+            	sendHtmlJson(getResponse(), json);
+//            	 PrintWriter write = null;  
+//                 //response.setContentType("application/text;charset=UTF-8");  
+//            this.getResponse().setContentType("text/html;charset=UTF-8");  
+//            this.getResponse().setHeader("Pragma", "No-cache");  
+//            this.getResponse().setHeader("Cache-Control", "no-cache");  
+//            this.getResponse().setDateHeader("Expires", 0);  
+//             try {  
+//                 write = this.getResponse().getWriter();  
+//                 write.write(json);  
+//                 write.flush();  
+//             } catch (IOException e) {  
+//                 throw new Exception("ajax write error" + e.getMessage());  
+//             } finally {  
+//            	 /*this.getResponse() = null;*/  
+//                 if (write != null)  
+//                     write.close();  
+//                     write = null;  
+//             }  
+            	
+                return null;
+            }else{
+            	
             }
            /* for(int j = 0;j < fileSuffix.length;j++){
             	if (fileFileName.endsWith(fileSuffix[j])) {
@@ -243,7 +285,13 @@ public class FileAction extends BaseAction {
             status = "2";
             message = "上传失败，请稍后重试！";
         }
-        return SUCCESS;
+        
+        jsonMap.put("status", status);
+    	jsonMap.put("message", message);
+    	String json = JSONObject.fromObject(jsonMap).toString();
+    	System.out.println("==================josn2:"+json+"===========");
+        sendHtmlJson(getResponse(), json);
+        return null;
     }
 
     public String download() throws Exception {
@@ -252,7 +300,7 @@ public class FileAction extends BaseAction {
         
         try {
         	//查找文件名
-        	String sampleFilename  = dataItemMgrService.queryDataitemById(dataitemId);
+        	String sampleFilename  = dataItemMgrService.queryDataitemById(dataitemId,downDate);
         	//String sampleFilename = dataitem.getSampleFilename();
         	if (!StringUtils.isNotEmpty(sampleFilename)) {
         		throw  new Exception("样例文件路径为空");
@@ -262,7 +310,7 @@ public class FileAction extends BaseAction {
         		uploadPath = ServletActionContext.getRequest().getRealPath("/upload");
         	}
         	//拼接文件全局路径
-        	filePath = uploadPath + File.separator  + dataitemId + File.separator +downDate+sampleFilename;
+        	filePath = uploadPath +sampleFilename;
         	
             // path是指欲下载的文件的路径。
             File file = new File(filePath);
@@ -282,8 +330,14 @@ public class FileAction extends BaseAction {
             // 清空response
             response.reset();
             // 设置response的Header
-            String filenameString = new String(filename.getBytes("utf-8"),
-                    "iso-8859-1");
+            String filenameString =filename;
+            if (this.getRequest().getHeader("User-Agent").toLowerCase().indexOf("firefox") > 0){
+            	filenameString = new String(filename.getBytes("utf-8"),"iso8859-1");
+            }
+            else if (this.getRequest().getHeader("User-Agent").toUpperCase().indexOf("MSIE") > 0){
+            	filenameString=URLEncoder.encode(filename, "UTF-8");
+            }
+            
             response.addHeader("Content-Disposition", "attachment;filename="
                     + filenameString);
             response.addHeader("Content-Length", "" + file.length());

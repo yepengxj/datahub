@@ -266,9 +266,9 @@
         //$('#dataitemUi  a').click(function (e) { 
         $('.teclass').click(function (e) {
         	 downDataitemId=$(this).attr("id"); 
-            if(typeOf(downDataitemId)=="undefined"){
+           /*  if(typeOf(downDataitemId)=="undefined"){
             	alert("无法获取对象id属性");
-            }
+            } */
         	 var url=host+"/datahub/dataItemMgrAction!queryDataitem.action"  ; 
          	jQuery.ajax({
          		type: "POST",

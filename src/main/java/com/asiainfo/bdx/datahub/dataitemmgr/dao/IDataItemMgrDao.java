@@ -25,7 +25,7 @@ public interface IDataItemMgrDao {
 	 * @param dataitemId
 	 * @throws Exception
 	 */
-	public String queryDateitemById(Long dataitemId)
+	public String queryDateitemById(Long dataitemId,String downDate)
 			throws Exception;
 	
 	/**
