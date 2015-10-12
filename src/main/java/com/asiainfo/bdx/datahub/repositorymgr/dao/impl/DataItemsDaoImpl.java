@@ -99,9 +99,9 @@ public class DataItemsDaoImpl extends BaseJdbcDao implements IDataItemsDao {
 	public List<Dataitem> getDataItemsByUpload(String userId) throws Exception {
 		List params = new ArrayList();
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT  DISTINCT A.DATAITEM_ID, A.ICO_NAME,A.DATAITEM_NAME,A.COMMENT FROM DH_DATAITEM A,DH_UPLOADLOG B WHERE A.DATAITEM_ID=B.DATAITEM_ID ");
+		sb.append("SELECT  DISTINCT A.DATAITEM_ID, A.ICO_NAME,A.DATAITEM_NAME,A.COMMENT FROM DH_DATAITEM A ");
 		if (StringUtils.isNotEmpty(userId)) {
-			sb.append("AND  A.USER_ID=?                                                                                                          ");
+			sb.append(" WHERE A.USER_ID=? ");
 			params.add(userId);
 		}
 		log.debug("DataItemsDaoImpl:getDataItemsByUpload:sql::" + sb.toString());
