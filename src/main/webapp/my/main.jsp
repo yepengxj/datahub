@@ -24,7 +24,9 @@
     		 data: {'dataitemId':dataitemId,'uploadtime':refreshDate},
     	    success: function(data) {
     	    	if(data.status==1){
-    	    		alert("上传成功");
+    	    		hideModal();
+                    alert("上传成功！");
+                    showmyTrade();
 				}else{
 					alert(data.message);
 					$('#attachmentFile'+n).val("");
