@@ -101,7 +101,7 @@ public class DataItemsDaoImpl extends BaseJdbcDao implements IDataItemsDao {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT  DISTINCT A.DATAITEM_ID, A.ICO_NAME,A.DATAITEM_NAME,A.COMMENT FROM DH_DATAITEM A ");
 		if (StringUtils.isNotEmpty(userId)) {
-			sb.append(" WHERE A.USER_ID=? ");
+			sb.append("WHERE  A.USER_ID=? ");
 			params.add(userId);
 		}
 		log.debug("DataItemsDaoImpl:getDataItemsByUpload:sql::" + sb.toString());

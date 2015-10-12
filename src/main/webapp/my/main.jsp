@@ -25,8 +25,8 @@
     	    success: function(data) {
     	    	if(data.status==1){
     	    		hideModal();
-                    alert("上传成功！");
-                    showmyTrade();
+                        alert("上传成功！");
+                        showmyTrade();
 				}else{
 					alert(data.message);
 					$('#attachmentFile'+n).val("");
@@ -357,7 +357,6 @@
     	
     	$('#subupload').attr('ind',$ind);
     	
-    	//alert($('#subupload1').val())
         $('#myModal').modal('toggle')
     }
     function hideModal(){
